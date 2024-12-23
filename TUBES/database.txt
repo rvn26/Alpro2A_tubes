@@ -1,0 +1,45 @@
+1,"Nama Barang    : Beras
+","Jumlah Stok    : 330
+","Harga barang   :25000.00
+","Kategori Barang:sembako
+"
+2,"Nama Barang    : kopi
+","Jumlah Stok    : 10
+","Harga barang   :10000.00
+","Kategori Barang:sembako
+"
+3,"Nama Barang    : minyak
+","Jumlah Stok    : 20
+","Harga barang   :15000.00
+","Kategori Barang:air
+"
+4,"Nama Barang    : telur
+","Jumlah Stok    : 300
+","Harga barang   :30000.00
+","Kategori Barang:sembako
+"
+5,"Nama Barang    : garam
+","Jumlah Stok    : 100
+","Harga barang   :10000.00
+","Kategori Barang:dapur
+"
+6,"Nama Barang    : luwak
+","Jumlah Stok    : 0
+","Harga barang   :0.00
+","Kategori Barang:pi
+"
+7,"Nama Barang    : susu
+","Jumlah Stok    : 100
+","Harga barang   :10000.00
+","Kategori Barang:minuman
+"
+8,"Nama Barang    : teh
+","Jumlah Stok    : 20
+","Harga barang   :10000.00
+","Kategori Barang:air
+"
+10,"Nama Barang    : Ultramilk
+","Jumlah Stok    : 100
+","Harga barang   :5000.00
+","Kategori Barang:susu
+"
