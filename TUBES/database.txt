@@ -1,0 +1,3 @@
+1,indomi,200,5000.00,makanan
+2,susu,330,20000.00,minuman
+3,kopi,50,10000.00,minuman
