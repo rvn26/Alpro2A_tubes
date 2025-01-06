@@ -29,50 +29,43 @@ func TransaksiBarangMasuk() {
 	fmt.Print("Jumlah Barang Masuk   : ")
 	fmt.Scan(&jumlah)
 
-	
-
 	for i, barang := range Dataset.BarangList {
 		if barang.ID == id && barang.Nama == nama {
 			Dataset.BarangList[i].Stok += jumlah
 			fmt.Println("Transaksi berhasil.")
 			totalMasuk++
-			break
-		}else{
-			fmt.Println("Transaksi gagal Periksa ID barang atau nama barang")
+			Dataset.TransaksiList = append(Dataset.TransaksiList, Dataset.Transaksi{
+				ID_Transaksi: id_transaksi,
+				ID_Barang:    id,
+				Nama_barang:  nama,
+				Jumlah:       jumlah,
+			})
 			return
 		}
+
 	}
-	Dataset.TransaksiList = append(Dataset.TransaksiList, Dataset.Transaksi{
-		ID_Transaksi: id_transaksi,
-		ID_Barang:    id,
-		Nama_barang:  nama,
-		Jumlah:       jumlah,
-	})
-	
-	
+
+	fmt.Println("Transaksi gagal Periksa ID barang atau nama barang")
 }
 
 func TransaksiBarangKeluar() {
-	
+
 	var totalKeluar = len(Dataset.TransakasiKeluar)
 	var id_transaksi string
 	var id, jumlah int
 	var nama string
-	
+
 	id_transaksi = generateIDTransaksiKeluar(totalKeluar)
 	fmt.Print("Masukkan ID Barang    : ")
 	fmt.Scan(&id)
 	fmt.Print("Masukkan Nama Barang  : ")
 	fmt.Scan(&nama)
-	fmt.Print("Jumlah Barang Masuk   : ")
+	fmt.Print("Jumlah Barang keluar   : ")
 	fmt.Scan(&jumlah)
-	
-	
-	
 
 	for i, barang := range Dataset.BarangList {
 		if barang.ID == id {
-			if barang.Stok >= jumlah  && barang.Nama == nama{
+			if barang.Stok >= jumlah && barang.Nama == nama {
 				Dataset.BarangList[i].Stok -= jumlah
 				fmt.Println("Transaksi berhasil.")
 			} else {
@@ -80,18 +73,16 @@ func TransaksiBarangKeluar() {
 				return
 			}
 			totalKeluar++
-			break
-		}else{
-			fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
+			Dataset.TransakasiKeluar = append(Dataset.TransakasiKeluar, Dataset.Transaksi{
+				ID_Transaksi: id_transaksi,
+				ID_Barang:    id,
+				Nama_barang:  nama,
+				Jumlah:       jumlah,
+			})
 			return
 		}
 	}
-	Dataset.TransakasiKeluar = append(Dataset.TransakasiKeluar, Dataset.Transaksi{
-		ID_Transaksi: id_transaksi,
-		ID_Barang:    id,
-		Nama_barang:  nama,
-		Jumlah:       jumlah,
-	})
+	fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
 }
 
 func CariBarang() {
@@ -115,14 +106,23 @@ func CariNamaBarang() {
 	var keyword string
 	fmt.Print("Masukkan Nama Barang: ")
 	fmt.Scan(&keyword)
-
+	found := false
 	fmt.Println("Hasil pencarian:")
+	fmt.Println("---------------------------------------------------------------")
+			fmt.Printf("|%-5s|%-20s|%-10s|%-10s|%-20s\n", "ID", "Nama", "Stok", "Harga", "Kategori")
+			fmt.Println("---------------------------------------------------------------")
 	for _, barang := range Dataset.BarangList {
-		if (strings.Contains(strings.ToLower(barang.Nama), strings.ToLower(keyword)) ||
-			strings.Contains(strings.ToLower(barang.Kategori), strings.ToLower(keyword))) {
-			fmt.Printf("ID: %d, Nama: %s, Stok: %d, Harga: %.2f, Kategori: %s\n",
+		if strings.Contains(strings.ToLower(barang.Nama), strings.ToLower(keyword)) ||
+			strings.Contains(strings.ToLower(barang.Kategori), strings.ToLower(keyword)) {
+				fmt.Printf("|%-5d|%-20s|%-10d|%-10.2f|%-20s\n",
 				barang.ID, barang.Nama, barang.Stok, barang.Harga, barang.Kategori)
+			fmt.Println("---------------------------------------------------------------")
+				found = true
 		}
+	}
+	if !found {
+		fmt.Println("Keyword yang dimasukan tidak ditemukan")
+		CariNamaBarang()
 	}
 }
 func TambahBarang() {
@@ -195,80 +195,84 @@ func HapusBarang() {
 	if found {
 		for i := id - 1; i < len(Dataset.BarangList); i++ {
 			Dataset.BarangList[i].ID--
-			
+
 		}
 		total--
 		fmt.Println("Barang berhasil dihapus.")
-	}else{
+	} else {
 		fmt.Println("Barang dengan ID tersebut tidak ditemukan.")
 	}
 }
 
 func TampilkanBarang() {
-	for{
-	var pilihan int
-	fmt.Println("----------------------------------")
-	fmt.Println("| 1. Tampilkan semua barang      |")
-	fmt.Println("| 2. Tampilkan berdasarkan stok  |")
-	fmt.Println("| 3. Tampilkan Transaksi Masuk   |")
-	fmt.Println("| 4. Tampilkan Transaksi Keluar  |")
-	fmt.Println("| 5. Kembali                     |")
-	fmt.Println("----------------------------------")
-	fmt.Print("Pilih opsi: ")
-	fmt.Scan(&pilihan)
-	if pilihan == 5 {
-		break
-	}
-	switch pilihan {
-	case 1:
-		fmt.Println("---------------------------------------------------------------")
-		fmt.Printf("|%-5s|%-20s|%-10s|%-10s|%-20s\n", "ID", "Nama", "Stok", "Harga", "Kategori")
-		fmt.Println("---------------------------------------------------------------")
-		for _, barang := range Dataset.BarangList {
-			fmt.Printf("|%-5d|%-20s|%-10d|%-10.2f|%-20s\n",
-				barang.ID, barang.Nama, barang.Stok, barang.Harga, barang.Kategori)
-			fmt.Println("---------------------------------------------------------------")
+	for {
+		var pilihan int
+		fmt.Println("----------------------------------")
+		fmt.Println("| 1. Tampilkan semua barang      |")
+		fmt.Println("| 2. Tampilkan berdasarkan stok  |")
+		fmt.Println("| 3. Tampilkan Transaksi Masuk   |")
+		fmt.Println("| 4. Tampilkan Transaksi Keluar  |")
+		fmt.Println("| 5. Kembali                     |")
+		fmt.Println("----------------------------------")
+		fmt.Print("Pilih opsi: ")
+		fmt.Scan(&pilihan)
+		if pilihan == 5 {
+			break
 		}
+		switch pilihan {
+		case 1:
+			fmt.Println("---------------------------------------------------------------")
+			fmt.Printf("|%-5s|%-20s|%-10s|%-10s|%-20s\n", "ID", "Nama", "Stok", "Harga", "Kategori")
+			fmt.Println("---------------------------------------------------------------")
+			for _, barang := range Dataset.BarangList {
+				fmt.Printf("|%-5d|%-20s|%-10d|%-10.2f|%-20s\n",
+					barang.ID, barang.Nama, barang.Stok, barang.Harga, barang.Kategori)
+				fmt.Println("---------------------------------------------------------------")
+			}
 
-	case 2:
-		fmt.Println("Barang terurut berdasarkan stok:")
-		fmt.Println("---------------------------------------------------------------")
-		fmt.Printf("|%-5s|%-20s|%-10s|%-10s|%-20s\n", "ID", "Nama", "Stok", "Harga", "Kategori")
-		fmt.Println("---------------------------------------------------------------")
-		for i := 0; i < len(Dataset.BarangList); i++ {
-			for j := i + 1; j < len(Dataset.BarangList); j++ {
-				if Dataset.BarangList[i].Stok > Dataset.BarangList[j].Stok {
-					Dataset.BarangList[i], Dataset.BarangList[j] = Dataset.BarangList[j], Dataset.BarangList[i]
+		case 2:
+			fmt.Println("Barang terurut berdasarkan stok:")
+			fmt.Println("---------------------------------------------------------------")
+			fmt.Printf("|%-5s|%-20s|%-10s|%-10s|%-20s\n", "ID", "Nama", "Stok", "Harga", "Kategori")
+			fmt.Println("---------------------------------------------------------------")
+			for i := 0; i < len(Dataset.BarangList); i++ {
+				for j := i + 1; j < len(Dataset.BarangList); j++ {
+					if Dataset.BarangList[i].Stok > Dataset.BarangList[j].Stok {
+						Dataset.BarangList[i], Dataset.BarangList[j] = Dataset.BarangList[j], Dataset.BarangList[i]
+					}
 				}
 			}
-		}
-		
-		for _, barang := range Dataset.BarangList {
-			fmt.Printf("|%-5d|%-20s|%-10d|%-10.2f|%-20s\n",
-				barang.ID, barang.Nama, barang.Stok, barang.Harga, barang.Kategori)
-		}
-	case 3:
-		fmt.Println("---------------------------------------------------------------")
-		fmt.Printf("|%-15s|%-15s|%-20s|%-10s\n", "ID Transaksi", "ID Barang", "Nama Barang", "Jumlah")
-		fmt.Println("---------------------------------------------------------------")
-		for _, transakasi := range Dataset.TransaksiList {
-			fmt.Printf("|%-15s|%-15d|%-20s|%-10d\n",
-				transakasi.ID_Transaksi, transakasi.ID_Barang, transakasi.Nama_barang, transakasi.Jumlah)
-		}
-	case 4:
-		fmt.Println("---------------------------------------------------------------")
-		fmt.Printf("|%-15s|%-15s|%-20s|%-10s\n", "ID Transaksi", "ID Barang", "Nama Barang", "Jumlah")
-		fmt.Println("---------------------------------------------------------------")
-		for _, transakasi := range Dataset.TransakasiKeluar {
-			fmt.Printf("|%-15s|%-15d|%-20s|%-10d\n",
-				transakasi.ID_Transaksi, transakasi.ID_Barang, transakasi.Nama_barang, transakasi.Jumlah)
-		}
-	default:
-		fmt.Println("Pilihan tidak valid.")
-	}
-}}
 
-func UrutID(){
+			for _, barang := range Dataset.BarangList {
+				fmt.Printf("|%-5d|%-20s|%-10d|%-10.2f|%-20s\n",
+					barang.ID, barang.Nama, barang.Stok, barang.Harga, barang.Kategori)
+				fmt.Println("---------------------------------------------------------------")
+			}
+		case 3:
+			fmt.Println("---------------------------------------------------------------")
+			fmt.Printf("|%-15s|%-15s|%-20s|%-10s\n", "ID Transaksi", "ID Barang", "Nama Barang", "Jumlah")
+			fmt.Println("---------------------------------------------------------------")
+			for _, transakasi := range Dataset.TransaksiList {
+				fmt.Printf("|%-15s|%-15d|%-20s|%-10d\n",
+					transakasi.ID_Transaksi, transakasi.ID_Barang, transakasi.Nama_barang, transakasi.Jumlah)
+				fmt.Println("---------------------------------------------------------------")
+			}
+		case 4:
+			fmt.Println("---------------------------------------------------------------")
+			fmt.Printf("|%-15s|%-15s|%-20s|%-10s\n", "ID Transaksi", "ID Barang", "Nama Barang", "Jumlah")
+			fmt.Println("---------------------------------------------------------------")
+			for _, transakasi := range Dataset.TransakasiKeluar {
+				fmt.Printf("|%-15s|%-15d|%-20s|%-10d\n",
+					transakasi.ID_Transaksi, transakasi.ID_Barang, transakasi.Nama_barang, transakasi.Jumlah)
+					fmt.Println("---------------------------------------------------------------")
+			}
+		default:
+			fmt.Println("Pilihan tidak valid.")
+		}
+	}
+}
+
+func UrutID() {
 	for i := 0; i < len(Dataset.BarangList); i++ {
 		for j := i + 1; j < len(Dataset.BarangList); j++ {
 			if Dataset.BarangList[i].ID > Dataset.BarangList[j].ID {
